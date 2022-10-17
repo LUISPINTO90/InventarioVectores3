@@ -5,6 +5,18 @@ let inventory = new Inventory();
 
 let actions = document.getElementById("actions");
 
+// Enable input Add in Position
+document.getElementById("switchAdd").addEventListener("click", () => {
+  let switchAdd = document.getElementById("switchAdd");
+  let productPosition = document.getElementById("productPosition");
+  productPosition.disabled = true;
+  productPosition.value = "";
+
+  if (switchAdd.checked == true) {
+    productPosition.disabled = false;
+  }
+});
+
 //  DOM EVENTS
 
 //  Add Product
@@ -13,6 +25,7 @@ document.getElementById("btnAddElement").addEventListener("click", () => {
   let productName = document.getElementById("productName").value;
   let productQuantity = document.getElementById("productQuantity").value;
   let productCost = document.getElementById("productCost").value;
+  let productPosition = document.getElementById("productPosition").value;
 
   let product = new Product(
     productCode,
@@ -35,22 +48,48 @@ document.getElementById("btnAddElement").addEventListener("click", () => {
 
     document.getElementById("formAdd").reset();
   } else {
-    if (inventory.addProduct(product)) {
-      actions.innerHTML += `
-        <div class="success">
-          <p>Se ha <b>AGREGADO</b> un producto</p>
+    let switchAdd = document.getElementById("switchAdd");
+
+    if (switchAdd.checked == true) {
+      if (inventory.addByPosition(productPosition, product)) {
+        actions.innerHTML += `
+          <div class="success">
+            <p>Se ha <b>AGREGADO</b> un producto en la posicion ${productPosition}</p>
+          </div>
+        `;
+
+        console.log(inventory);
+
+        document.getElementById("formAdd").reset();
+      } else {
+        actions.innerHTML += `
+        <div class="error">
+          <p><b>ERROR</b><br>Ingresa una posicion valida</p>
         </div>
       `;
 
-      document.getElementById("formAdd").reset();
+        document.getElementById("formAdd").reset();
+      }
     } else {
-      actions.innerHTML += `
-      <div class="error">
-        <p><b>ERROR</b><br>El producto ya existe</p>
-      </div>
-    `;
+      if (inventory.addProduct(product)) {
+        actions.innerHTML += `
+          <div class="success">
+            <p>Se ha <b>AGREGADO</b> un producto</p>
+          </div>
+        `;
 
-      document.getElementById("formAdd").reset();
+        console.log(inventory);
+
+        document.getElementById("formAdd").reset();
+      } else {
+        actions.innerHTML += `
+        <div class="error">
+          <p><b>ERROR</b><br>El producto ya existe</p>
+        </div>
+      `;
+
+        document.getElementById("formAdd").reset();
+      }
     }
   }
 });
@@ -76,6 +115,8 @@ document.getElementById("btnDelElement").addEventListener("click", () => {
         <p>Se ha <b>ELIMINADO</b> un producto</p>
       </div>
     `;
+
+      console.log(inventory);
 
       document.getElementById("formDelete").reset();
     } else {

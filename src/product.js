@@ -4,10 +4,7 @@ export default class Product {
     this.name = name;
     this.quantity = quantity;
     this.cost = cost;
-  }
-
-  getCode() {
-    return this.code;
+    this.next = null;
   }
 
   getDetails() {
